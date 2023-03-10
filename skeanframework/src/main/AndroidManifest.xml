@@ -1,0 +1,67 @@
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="me.skean.skeanframework">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <application>
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="${AMAP_API_KEY}" />
+
+        <meta-data
+            android:name="PGYER_API_KEY"
+            android:value="${PGYER_API_KEY}"/>
+        <meta-data
+            android:name="PGYER_FRONTJS_KEY"
+            android:value="${PGYER_FRONTJS_KEY}"/>
+
+        <meta-data
+            android:name="PGYER_APP_KEY"
+            android:value="${PGYER_APP_KEY}"/>
+
+        <meta-data
+            android:name="PGYER_FEATURE_CHECK_UNPDATE"
+            android:value="false" />
+
+        <!-- 强制更新Dialog-->
+        <activity
+            android:name=".component.UpdateDialog"
+            android:theme="@style/AppTheme.Dialog"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
+
+
+        <!--地图预览-->
+        <activity
+            android:name=".component.MapActivity"
+            android:label="地图预览"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+
+        <!--高德的定位后台-->
+        <service android:name="com.amap.api.location.APSService" />
+
+    </application>
+
+</manifest>

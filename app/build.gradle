@@ -1,0 +1,200 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+apply plugin: "kotlin-allopen"
+apply plugin: "kotlin-kapt"
+apply plugin: "androidx.navigation.safeargs"
+
+
+allOpen {
+    annotation("org.androidannotations.api.KotlinOpen")
+}
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += '-Xjvm-default=compatibility'
+    }
+    signingConfigs {
+        //todo 修改签名文件
+        config {
+            keyAlias 'test'
+            keyPassword '123456'
+            storeFile file('test.jks')
+            storePassword '123456'
+        }
+    }
+    compileSdkVersion 30
+    def vcode = Integer.parseInt(VERSION_CODE)
+    def vname = VERSION_NAME
+    def isRelease = gradle.startParameter.taskRequests.any {
+        it.args.any { it.endsWith("Release") }
+    }
+    if (isRelease) {
+        vcode = vcode + 1
+        def versionNameGroup = VERSION_NAME.split("\\.")
+        def versionNamePart1 = Integer.parseInt(versionNameGroup[0])
+        def versionNamePart2 = Integer.parseInt(versionNameGroup[1])
+        def versionNamePart3 = Integer.parseInt(versionNameGroup[2])
+        versionNamePart3 = versionNamePart3 + 1
+        if (versionNamePart3 > 9) {
+            versionNamePart3 = 0
+            versionNamePart2 = versionNamePart2 + 1
+            if (versionNamePart2 > 9) {
+                versionNamePart2 = 0
+                versionNamePart1 = versionNamePart1 + 1
+            }
+        }
+        vname = versionNamePart1 + "." + versionNamePart2 + "." + versionNamePart3
+        ant.propertyfile(file: "../gradle.properties") {
+            entry(key: "VERSION_CODE", value: vcode)
+            entry(key: "VERSION_NAME", value: vname)
+        }
+    }
+
+    defaultConfig {
+        //todo 修改程序ID
+        applicationId "me.skean.framework.example"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode vcode
+        versionName vname
+        multiDexEnabled true
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+
+        kapt {
+            arguments {
+                arg('eventBusIndex', "${android.defaultConfig.applicationId}.EventBusIndex")
+                arg('resourcePackageName', android.defaultConfig.applicationId)
+                arg("room.schemaLocation", "$projectDir/schemas")
+                arg('androidManifestFile', "$projectDir/src/main/AndroidManifest.xml")
+            }
+        }
+        applicationVariants.all { variant ->
+            //修改打包的apk名字
+            variant.outputs.all {
+                def dateStr = new SimpleDateFormat("MMddHHmm", Locale.US).format(new Date())
+                def shortAppId = "${defaultConfig.applicationId}".substring("${defaultConfig.applicationId}".lastIndexOf(".") + 1)
+                def versionTag = variant.buildType.name.charAt(0)
+                outputFileName = "${shortAppId}-${vname}${versionTag}(b${vcode})-${dateStr}.apk"
+            }
+
+        }
+        manifestPlaceholders = [rawApplicationId: defaultConfig.applicationId]
+    }
+    buildTypes {
+        //todo 通用的配置
+        def appTag = "\"" + "${defaultConfig.applicationId}".substring("${defaultConfig.applicationId}".lastIndexOf(".") + 1) + "\""
+        def useExternalDatabase = true
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            signingConfig signingConfigs.config
+            buildConfigField "String", "APP_TAG", "${appTag}"
+            buildConfigField "boolean", "EXTERNAL_DB", "${useExternalDatabase}"
+        }
+        debug {
+            signingConfig signingConfigs.config
+            buildConfigField "String", "APP_TAG", "${appTag}"
+            buildConfigField "boolean", "EXTERNAL_DB", "${useExternalDatabase}"
+        }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        //todo 渠道打包配置配置
+        // 发布环境
+        production {
+            dimension "default"
+            resValue "string", "app_name", 'SFW'
+            buildConfigField "String", "BUGLY_APPID", '"ccced6668f"'
+            buildConfigField "boolean", "LOG_TO_FILE", 'true'
+            buildConfigField "boolean", "IS_INTRANET", 'true'
+            manifestPlaceholders = [AMAP_API_KEY     : "b46c4981b8e07d4d613867e03c753f4b",
+                                    PGYER_FRONTJS_KEY: "634980e6bf0cc563094186720a9d3f8b",
+                                    PGYER_API_KEY    : "8c9438bcab1415568aa14299358af9f7",
+                                    PGYER_APP_KEY    : "88470f142b1734c12f5bf9f9b3303cea"]
+        }
+        // 测试环境
+        beta {
+            dimension "default"
+            applicationId "${defaultConfig.applicationId}.beta"
+            resValue "string", "app_name", 'SFW-beta'
+            buildConfigField "String", "BUGLY_APPID", '"ccced6668f"'
+            buildConfigField "boolean", "LOG_TO_FILE", 'true'
+            buildConfigField "boolean", "IS_INTRANET", 'false'
+            manifestPlaceholders = [AMAP_API_KEY     : "b46c4981b8e07d4d613867e03c753f4b",
+                                    PGYER_FRONTJS_KEY: "634980e6bf0cc563094186720a9d3f8b",
+                                    PGYER_API_KEY    : "8c9438bcab1415568aa14299358af9f7",
+                                    PGYER_APP_KEY    : "88470f142b1734c12f5bf9f9b3303cea"]
+        }
+        // 开发
+        develop {
+            dimension "default"
+            applicationId "${defaultConfig.applicationId}.dev"
+            resValue "string", "app_name", 'SFW-dev'
+            buildConfigField "String", "BUGLY_APPID", '"ccced6668f"'
+            buildConfigField "boolean", "LOG_TO_FILE", 'false'
+            buildConfigField "boolean", "IS_INTRANET", 'false'
+            manifestPlaceholders = [AMAP_API_KEY     : "b46c4981b8e07d4d613867e03c753f4b",
+                                    PGYER_FRONTJS_KEY: "634980e6bf0cc563094186720a9d3f8b",
+                                    PGYER_API_KEY    : "8c9438bcab1415568aa14299358af9f7",
+                                    PGYER_APP_KEY    : "88470f142b1734c12f5bf9f9b3303cea"]
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs += 'build/generated/source/greendao'
+            assets.srcDirs += "$projectDir/schemas"
+            jniLibs.srcDirs = ['libs']
+            res.srcDirs = [
+                    'src/main/res/'
+            ]
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    viewBinding {
+        enabled = true
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/androidx.exifinterface_exifinterface.version'
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+
+dependencies {
+//       implementation 'com.github.Skeaner:SkeanFrameWork:1.2.4'
+    implementation project(path: ':skeanframework')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.8.0"
+    kapt "org.androidannotations:androidannotations:4.6.0"
+    kapt 'com.github.AleksanderMielczarek:AndroidAnnotationsPermissionsDispatcherPlugin:2.1.1'
+    kapt 'org.greenrobot:eventbus-annotation-processor:3.1.1'
+    kapt 'com.jakewharton:butterknife-compiler:10.2.0'
+    kapt "androidx.room:room-compiler:2.3.0"
+}
