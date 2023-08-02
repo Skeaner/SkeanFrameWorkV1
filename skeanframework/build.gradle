@@ -185,4 +185,34 @@ dependencies {
     //viewBinding
     api 'com.hi-dhl:binding:1.1.3'
 }
+/****以下是本地打包的内容, 修改版本号, 终端执行gradlew install, 打包完成在/用户文件夹/.m2/repository里面****/
 
+// 配置maven库，生成POM.xml文件
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                //对应pom中<groupId>
+                group 'com.github.Skeaner'
+                //对应pom中<artifactId>
+                artifactId 'SkeanFrameWorkV1'
+                //对应pom中<version>
+                version '1.5.2'
+                //对应pom中<packaging>
+                packaging 'aar'
+            }
+        }
+    }
+}
+
+//生成jar包的task
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+//上传到JCenter所需要的源码文件
+artifacts {
+    archives sourcesJar
+}
