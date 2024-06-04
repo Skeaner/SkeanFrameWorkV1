@@ -11,7 +11,7 @@ import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.Utils
 import com.chibatching.kotpref.Kotpref
-import com.pgyer.pgyersdk.PgyerSDKManager
+import com.tencent.bugly.crashreport.CrashReport
 import me.skean.framework.example.BuildConfig
 import me.skean.framework.example.EventBusIndex
 import me.skean.framework.example.db.AppDatabase
@@ -140,10 +140,8 @@ class App : MultiDexApplication(), StatusCallback {
         //初始化上报的工具
         if (BuildConfig.IS_INTRANET) { //内网的保存在本地文件中
             ReportUtils.getInstance().init(this)
-        } else { //外网的使用PGYER
-            PgyerSDKManager.Init()
-                .setContext(this)
-                .start()
+        } else { //外网的使用BUGLY
+            CrashReport.initCrashReport(applicationContext)
         }
     }
 

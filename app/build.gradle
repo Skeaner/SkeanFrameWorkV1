@@ -30,7 +30,7 @@ android {
             storePassword '123456'
         }
     }
-    compileSdkVersion 30
+    compileSdkVersion 31
     def vcode = Integer.parseInt(VERSION_CODE)
     def vname = VERSION_NAME
     def isRelease = gradle.startParameter.taskRequests.any {
@@ -61,8 +61,8 @@ android {
     defaultConfig {
         //todo 修改程序ID
         applicationId "me.skean.framework.example"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion 31
+        targetSdkVersion 31
         versionCode vcode
         versionName vname
         multiDexEnabled true
@@ -118,10 +118,12 @@ android {
             buildConfigField "String", "BUGLY_APPID", '"ccced6668f"'
             buildConfigField "boolean", "LOG_TO_FILE", 'true'
             buildConfigField "boolean", "IS_INTRANET", 'true'
-            manifestPlaceholders = [AMAP_API_KEY     : "b46c4981b8e07d4d613867e03c753f4b",
-                                    PGYER_FRONTJS_KEY: "634980e6bf0cc563094186720a9d3f8b",
-                                    PGYER_API_KEY    : "8c9438bcab1415568aa14299358af9f7",
-                                    PGYER_APP_KEY    : "88470f142b1734c12f5bf9f9b3303cea"]
+            manifestPlaceholders = [AMAP_API_KEY        : "b46c4981b8e07d4d613867e03c753f4b",
+                                    PGYER_API_KEY       : "8c9438bcab1415568aa14299358af9f7",
+                                    PGYER_APP_KEY       : "88470f142b1734c12f5bf9f9b3303cea",
+                                    BUGLY_APPID         : "ccced6668f",
+                                    "BUGLY_ENABLE_DEBUG": "true"
+            ]
         }
         // 测试环境
         beta {
@@ -131,10 +133,12 @@ android {
             buildConfigField "String", "BUGLY_APPID", '"ccced6668f"'
             buildConfigField "boolean", "LOG_TO_FILE", 'true'
             buildConfigField "boolean", "IS_INTRANET", 'false'
-            manifestPlaceholders = [AMAP_API_KEY     : "b46c4981b8e07d4d613867e03c753f4b",
-                                    PGYER_FRONTJS_KEY: "634980e6bf0cc563094186720a9d3f8b",
-                                    PGYER_API_KEY    : "8c9438bcab1415568aa14299358af9f7",
-                                    PGYER_APP_KEY    : "88470f142b1734c12f5bf9f9b3303cea"]
+            manifestPlaceholders = [AMAP_API_KEY        : "b46c4981b8e07d4d613867e03c753f4b",
+                                    PGYER_API_KEY       : "8c9438bcab1415568aa14299358af9f7",
+                                    PGYER_APP_KEY       : "88470f142b1734c12f5bf9f9b3303cea",
+                                    BUGLY_APPID         : "ccced6668f",
+                                    "BUGLY_ENABLE_DEBUG": "true"
+            ]
         }
         // 开发
         develop {
@@ -144,10 +148,12 @@ android {
             buildConfigField "String", "BUGLY_APPID", '"ccced6668f"'
             buildConfigField "boolean", "LOG_TO_FILE", 'false'
             buildConfigField "boolean", "IS_INTRANET", 'false'
-            manifestPlaceholders = [AMAP_API_KEY     : "b46c4981b8e07d4d613867e03c753f4b",
-                                    PGYER_FRONTJS_KEY: "634980e6bf0cc563094186720a9d3f8b",
-                                    PGYER_API_KEY    : "8c9438bcab1415568aa14299358af9f7",
-                                    PGYER_APP_KEY    : "88470f142b1734c12f5bf9f9b3303cea"]
+            manifestPlaceholders = [AMAP_API_KEY        : "b46c4981b8e07d4d613867e03c753f4b",
+                                    PGYER_API_KEY       : "8c9438bcab1415568aa14299358af9f7",
+                                    PGYER_APP_KEY       : "88470f142b1734c12f5bf9f9b3303cea",
+                                    BUGLY_APPID         : "ccced6668f",
+                                    "BUGLY_ENABLE_DEBUG": "true"
+            ]
         }
     }
     sourceSets {

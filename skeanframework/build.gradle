@@ -15,11 +15,10 @@ android {
         viewBinding true
         dataBinding true
     }
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion 31
         versionName '1.0'
         versionCode 1
     }
@@ -143,13 +142,13 @@ dependencies {
     //下拉刷新ultra-ptr
     api 'in.srain.cube:ultra-ptr:1.0.11'
     //RecyclerView综合适配器
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.6'
+    api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.14"
     //material design日期加时间选择器
     api 'com.github.Skeaner:SublimePicker:2.1.2'
     //权限提示
     api 'com.github.Skeaner:EasyPermissionDialog:1.8'
-    //pgysdk
-    api "com.pgyer:analytics:4.3.2"
+    //bugly
+    api "com.tencent.bugly:crashreport:4.1.9.3"
     //butterknife
     api 'com.jakewharton:butterknife:10.2.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.0'
