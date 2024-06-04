@@ -142,7 +142,7 @@ dependencies {
     //下拉刷新ultra-ptr
     api 'in.srain.cube:ultra-ptr:1.0.11'
     //RecyclerView综合适配器
-    api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.7"
+    api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.11"
     //material design日期加时间选择器
     api 'com.github.Skeaner:SublimePicker:2.1.2'
     //权限提示
