@@ -14,7 +14,7 @@ import me.skean.skeanframework.delegate.AdvanceOnItemChildClickListener
 import me.skean.skeanframework.delegate.AdvanceOnItemChildLongClickListener
 import me.skean.skeanframework.delegate.UnionClickListener
 import java.util.Objects
-import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty1
 
 /**
  * Created by Skean on 21/6/1.
@@ -46,7 +46,6 @@ fun BaseQuickAdapter<*, *>.removeOnItemChildClickListener(viewId: Int) {
         }
     }
 }
-
 
 
 fun BaseQuickAdapter<*, *>.addOnItemChildLongClickListener(viewId: Int, delegate: (BaseQuickAdapter<*, *>, View, Int) -> Unit) {
@@ -106,8 +105,8 @@ inline fun BaseViewHolder.addTextChangedListener(
 }
 
 fun <T> quickDiffCallback(
-    id: KMutableProperty1<T, out Any?>? = null,
-    vararg compareProps: KMutableProperty1<T, out Any?>
+    id: KProperty1<T, Any?>? = null,
+    vararg compareProps: KProperty1<T, Any?>
 ): DiffUtil.ItemCallback<T> {
     return object : DiffUtil.ItemCallback<T>() {
         override fun areItemsTheSame(oldItem: T & Any, newItem: T & Any): Boolean {
