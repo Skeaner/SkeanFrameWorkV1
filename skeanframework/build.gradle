@@ -15,20 +15,20 @@ android {
         viewBinding true
         dataBinding true
     }
-    compileSdkVersion 31
+    compileSdkVersion 30
 
     defaultConfig {
-        minSdkVersion 31
+        minSdkVersion 30
         versionName '1.0'
         versionCode 1
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
         freeCompilerArgs += "-Xjvm-default=all-compatibility"
     }
 
@@ -142,7 +142,7 @@ dependencies {
     //下拉刷新ultra-ptr
     api 'in.srain.cube:ultra-ptr:1.0.11'
     //RecyclerView综合适配器
-    api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.14"
+    api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.7"
     //material design日期加时间选择器
     api 'com.github.Skeaner:SublimePicker:2.1.2'
     //权限提示
