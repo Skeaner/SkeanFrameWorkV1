@@ -20,28 +20,24 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.XXPermissions;
+import com.hjq.permissions.permission.PermissionLists;
+import com.hjq.permissions.permission.base.IPermission;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import me.skean.skeanframework.R;
 import me.skean.skeanframework.utils.AMapUtil;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.PermissionUtils;
-import permissions.dispatcher.RuntimePermissions;
 import skean.yzsm.com.easypermissiondialog.EasyPermissionDialog;
 
 /**
  * 地图预览
  */
-@RuntimePermissions
 public class MapActivity extends BaseActivity implements AMapLocationListener, LocationSource {
 
     private static final String TAG = "MapActivity";
-
-    public static final String LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    public static final String[] PERMISSIONS = {LOCATION};
-    public static final int REQUEST_SETTING = 1;
 
     public static final String EXTRA_SHOW_LOCATION_ONLY = "show_location_only";
     public static final String EXTRA_ADDRESS = "address";
@@ -78,7 +74,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         if (map == null) map = mapView.getMap();
         if (!showLocationOnly) {
             map.moveCamera(CameraUpdateFactory.zoomTo(map.getMaxZoomLevel() - 2));
-            MapActivityPermissionsDispatcher.tryLocateWithPermissionCheck(MapActivity.this);
+            tryLocate();
         }
         else showLocation();
     }
@@ -135,19 +131,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        MapActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SETTING) {
-            if (PermissionUtils.hasSelfPermissions(getContext(), LOCATION)) tryLocate();
-        }
-    }
 
     ///////////////////////////////////////////////////////////////////////////
     // DELE
@@ -184,22 +167,21 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     // CTRL
     ///////////////////////////////////////////////////////////////////////////
 
-    @NeedsPermission(LOCATION)
     public void tryLocate() {
-        startMyLocation();
+        XXPermissions.with(this).permission(PermissionLists.getAccessFineLocationPermission()).request((grantedList, deniedList) -> {
+            if (deniedList.isEmpty()) {
+                startMyLocation();
+            }
+            else {
+                EasyPermissionDialog.build(this)
+                                    .permissions(deniedList)
+                                    .show(XXPermissions.isDoNotAskAgainPermissions(this, deniedList), allow -> {
+                                        if (allow) tryLocate();
+                                    });
+            }
+        });
     }
 
-    @OnPermissionDenied(LOCATION)
-    public void locateDeny() {
-        EasyPermissionDialog.build(this).permissions(PERMISSIONS).typeTemporaryDeny(allow -> {
-            if (allow) MapActivityPermissionsDispatcher.tryLocateWithPermissionCheck(MapActivity.this);
-        }).show();
-    }
-
-    @OnNeverAskAgain(LOCATION)
-    public void locateNever() {
-        EasyPermissionDialog.build(this).permissions(PERMISSIONS).typeNeverAsk( null).show();
-    }
 
     private void startMyLocation() {
         // 设置定位监听
@@ -207,7 +189,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         // 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
         map.getUiSettings().setMyLocationButtonEnabled(true);
         MyLocationStyle style = new MyLocationStyle();
-        style.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.sfw_ic_location_point_red)).strokeColor(Color.TRANSPARENT);
+        style.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.sfw_ic_location_point_red))
+             .strokeColor(Color.TRANSPARENT);
         map.setMyLocationStyle(style);
         map.setMyLocationEnabled(true);
     }

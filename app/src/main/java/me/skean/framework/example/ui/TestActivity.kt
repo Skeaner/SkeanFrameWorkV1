@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.hi.dhl.binding.viewbind
+import com.hjq.permissions.permission.PermissionLists
 import io.reactivex.Single
 import me.skean.framework.example.component.App
 import me.skean.skeanframework.component.BaseActivity
@@ -59,7 +61,7 @@ class TestActivity : BaseActivity() {
         vb.txvSelect.setOnClickListener {
             val baseUrl = NetworkUtil.getBaseUrlForClass(FileIOApi::class.java)
             ToastUtils.showShort(baseUrl)
-            throw  RuntimeException("测试上报")
+            throw RuntimeException("测试上报")
         }
 //        postInMainDelayed(3000, "MSG", TestRunnable())
         val dm = resources.displayMetrics
@@ -195,8 +197,7 @@ class TestActivity : BaseActivity() {
     }
 
     private fun testPermission(onGranted: () -> Unit) {
-        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-        requestPermissionEach(*permissions) {
+        reqPermissions(PermissionLists.getReadExternalStoragePermission(), PermissionLists.getCameraPermission()) {
             onGranted.invoke()
         }
     }

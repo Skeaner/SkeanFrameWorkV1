@@ -67,7 +67,7 @@ android {
         versionName vname
         multiDexEnabled true
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }
 
         kapt {
@@ -88,7 +88,13 @@ android {
             }
 
         }
-        manifestPlaceholders = [rawApplicationId: defaultConfig.applicationId]
+        manifestPlaceholders = [rawApplicationId: defaultConfig.applicationId,
+                                AMAP_API_KEY        : "your_actual_key_or_empty",
+                                PGYER_API_KEY       : "your_actual_key_or_empty",
+                                PGYER_APP_KEY      : "your_actual_key_or_empty",
+                                BUGLY_APPID      : "your_actual_key_or_empty",
+                                BUGLY_ENABLE_DEBUG  : "false"
+        ]
     }
     buildTypes {
         //todo 通用的配置

@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 
+import com.hjq.permissions.XXPermissions;
+import com.hjq.permissions.permission.PermissionLists;
+import com.hjq.permissions.permission.base.IPermission;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
@@ -20,11 +23,6 @@ import androidx.annotation.Nullable;
 import me.skean.skeanframework.BuildConfig;
 import me.skean.skeanframework.R;
 import me.skean.skeanframework.utils.Glide4Engine;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.PermissionUtils;
-import permissions.dispatcher.RuntimePermissions;
 import skean.yzsm.com.easypermissiondialog.EasyPermissionDialog;
 
 import static android.app.Activity.RESULT_OK;
@@ -32,13 +30,8 @@ import static android.app.Activity.RESULT_OK;
 /**
  * 选择图片基础Activity
  */
-@RuntimePermissions
 public class SelectPictureFragment extends BaseFragment {
 
-    private static final String P1 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    private static final String P2 = Manifest.permission.READ_EXTERNAL_STORAGE;
-    private static final String P3 = Manifest.permission.CAMERA;
-    private static final int REQUEST_PERMISSION = 98;
     private static final int REQUEST_CHOOSE_PICTURE = 99;
 
     protected List<String> selectedPicturePaths;
@@ -50,11 +43,6 @@ public class SelectPictureFragment extends BaseFragment {
     // 1
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SelectPictureFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -66,9 +54,6 @@ public class SelectPictureFragment extends BaseFragment {
                 onSelectPictureResult(selectedPicturePaths);
             }
         }
-        else if (requestCode == REQUEST_PERMISSION) {
-            SelectPictureFragmentPermissionsDispatcher.startSelectPictureWithPermissionCheck(this);
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -76,7 +61,19 @@ public class SelectPictureFragment extends BaseFragment {
     ///////////////////////////////////////////////////////////////////////////
 
     protected final void startSelectPictureWithPermissionCheck() {
-        SelectPictureFragmentPermissionsDispatcher.startSelectPictureWithPermissionCheck(this);
+        List<IPermission> permissions = List.of(PermissionLists.getWriteExternalStoragePermission(),
+                                                PermissionLists.getReadExternalStoragePermission(),
+                                                PermissionLists.getCameraPermission());
+        XXPermissions.with(this).permissions(permissions).request((grantedList, deniedList) -> {
+            if (deniedList.isEmpty()) startSelectPicture();
+            else {
+                EasyPermissionDialog.build(this)
+                                    .permissions(deniedList)
+                                    .show(XXPermissions.isDoNotAskAgainPermissions(requireActivity(), deniedList), allow -> {
+                                        if (allow) startSelectPictureWithPermissionCheck();
+                                    });
+            }
+        });
     }
 
     public void onSelectPictureResult(List<String> pathList) {
@@ -101,7 +98,6 @@ public class SelectPictureFragment extends BaseFragment {
         }
     }
 
-    @NeedsPermission({P1, P2, P3})
     public final void startSelectPicture() {
         Matisse.from(this)
                .choose(EnumSet.of(MimeType.JPEG, MimeType.PNG), false)
@@ -119,20 +115,5 @@ public class SelectPictureFragment extends BaseFragment {
                .forResult(REQUEST_CHOOSE_PICTURE);
     }
 
-    @OnPermissionDenied({P1, P2, P3})
-    public final void permissionDenied() {
-        if (PermissionUtils.hasSelfPermissions(getContext(), P1, P2, P3)) {
-            EasyPermissionDialog.build(this).permissions(P1, P2, P3).typeTemporaryDeny(allow -> {
-                if (allow) {
-                    SelectPictureFragmentPermissionsDispatcher.startSelectPictureWithPermissionCheck(this);
-                }
-            }).show();
-        }
-    }
-
-    @OnNeverAskAgain({P1, P2, P3})
-    public final void permissionNever() {
-        EasyPermissionDialog.build(this).permissions(P1, P2, P3).typeNeverAsk( null).show();
-    }
 
 }

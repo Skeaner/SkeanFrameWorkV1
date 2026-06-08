@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.RegexUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -720,7 +721,7 @@ public class ContentUtil {
     // 其他内容
     ///////////////////////////////////////////////////////////////////////////
 
-    public static String getMediaFileTimeLength(File file) {
+    public static String getMediaFileTimeLength(File file) throws IOException {
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
         metaRetriever.setDataSource(file.getAbsolutePath());
         String out = "";
