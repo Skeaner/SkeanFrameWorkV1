@@ -21,6 +21,10 @@ android {
         jvmTarget = "1.8"
         freeCompilerArgs += "-Xjvm-default=all-compatibility"
     }
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
     signingConfigs {
         //todo 修改签名文件
         config {
@@ -30,7 +34,7 @@ android {
             storePassword '123456'
         }
     }
-    compileSdkVersion 30
+    compileSdkVersion 34
     def vcode = Integer.parseInt(VERSION_CODE)
     def vname = VERSION_NAME
     def isRelease = gradle.startParameter.taskRequests.any {
