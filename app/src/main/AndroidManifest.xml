@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--todo 替换包名-->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="me.skean.framework.example">
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -20,6 +19,23 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="allowBackup,requestLegacyExternalStorage">
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="${AMAP_API_KEY}" />
+        <meta-data
+            android:name="PGYER_API_KEY"
+            android:value="${PGYER_API_KEY}" />
+        <meta-data
+            android:name="PGYER_APP_KEY"
+            android:value="${PGYER_APP_KEY}" />
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="${BUGLY_APPID}" />
+        <meta-data
+            android:name="BUGLY_ENABLE_DEBUG"
+            android:value="${BUGLY_ENABLE_DEBUG}" />
+
 
         <!--主页-->
 

@@ -9,6 +9,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.MetaDataUtils
 import com.blankj.utilcode.util.Utils
 import com.chibatching.kotpref.Kotpref
 import com.tencent.bugly.crashreport.CrashReport
@@ -132,6 +133,7 @@ class App : MultiDexApplication(), StatusCallback {
                     single { database!!.dummyDao }
                 })
         }
+        MetaDataUtils.getMetaDataInApp("PGYER_API_KEY")
         UpdateUtils.checkUpdateByPgyerApi(this)
     }
 

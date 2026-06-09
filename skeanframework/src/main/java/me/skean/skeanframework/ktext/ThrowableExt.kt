@@ -1,7 +1,6 @@
 package me.skean.skeanframework.ktext
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.google.gson.JsonObject
 import me.skean.skeanframework.utils.NetworkUtil
 import org.json.JSONObject
 import retrofit2.HttpException

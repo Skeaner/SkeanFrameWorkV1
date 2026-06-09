@@ -1,6 +1,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.skean.skeanframework">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -25,26 +25,7 @@
 
     <application>
 
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="${AMAP_API_KEY}" />
 
-        <meta-data
-            android:name="PGYER_API_KEY"
-            android:value="${PGYER_API_KEY}" />
-
-        <meta-data
-            android:name="PGYER_APP_KEY"
-            android:value="${PGYER_APP_KEY}" />
-
-        <meta-data
-            android:name="BUGLY_APPID"
-            android:value="${BUGLY_APPID}" />
-
-        <!-- 配置Bugly调试模式（true或者false）-->
-        <meta-data
-            android:name="BUGLY_ENABLE_DEBUG"
-            android:value="${BUGLY_ENABLE_DEBUG}" />
 
         <!-- 强制更新Dialog-->
         <activity

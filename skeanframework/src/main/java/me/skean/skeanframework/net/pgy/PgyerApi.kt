@@ -13,7 +13,6 @@ import retrofit2.http.*
  */
 interface PgyerApi  {
 
-    @JvmDefault
      val baseUrl: String
         get() = "http://www.pgyer.com/apiv2/app/"
 
